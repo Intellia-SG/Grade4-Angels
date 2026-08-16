@@ -3,9 +3,9 @@ import { getAngleDegrees, snapToDegrees, classifyAngle } from '../../utils/angle
 import { sounds } from '../../utils/audio';
 
 const ROUNDS = [
-  { target: 'acute', label: 'Acute Angle (less than 90°)', desc: 'Drag the handle to create an angle smaller than a corner, then check your answer!' },
-  { target: 'right', label: 'Right Angle (exactly 90°)', desc: 'Drag the handle to build a perfect square corner.' },
-  { target: 'obtuse', label: 'Obtuse Angle (between 90° and 180°)', desc: 'Drag the handle to create a wide angle larger than a corner but not flat.' }
+  { target: 'acute', label: 'Acute Angle (less than 90°)', desc: 'Drag the handle to create an angle <strong>smaller than 90°</strong>, then check your answer!' },
+  { target: 'right', label: 'Right Angle (exactly 90°)', desc: 'Drag the handle to build a <strong>perfect 90° square corner</strong>.' },
+  { target: 'obtuse', label: 'Obtuse Angle (between 90° and 180°)', desc: 'Drag the handle to create a wide angle <strong>between 90° and 180°</strong>.' }
 ];
 
 export default function AngleMakerStation({ onStationComplete }) {
@@ -126,8 +126,12 @@ export default function AngleMakerStation({ onStationComplete }) {
   return (
     <div className="station-content">
       <div className="station-header">
-        <h2>Round {round + 1} of 3: Build a {currentRound.label}</h2>
-        <p className="wonder-subtext" style={{ marginBottom: 12 }}>{currentRound.desc}</p>
+        <h2>Round {round + 1} of 3: Build a <strong>{currentRound.label}</strong></h2>
+        <p 
+          className="wonder-subtext" 
+          style={{ marginBottom: 12 }}
+          dangerouslySetInnerHTML={{ __html: currentRound.desc }}
+        />
       </div>
 
       <div 

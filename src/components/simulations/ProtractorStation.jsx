@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { sounds } from '../../utils/audio';
 
 const ROUNDS = [
-  { angleOffset: 20, angleSize: 60, desc: "Measure this acute angle. Align the protractor center to the vertex and rotate it to the baseline!" },
-  { angleOffset: -40, angleSize: 90, desc: "Measure this right angle. Find the square corner measure!" },
-  { angleOffset: 45, angleSize: 120, desc: "Measure this obtuse angle. Read the wide scale carefully!" }
+  { angleOffset: 20, angleSize: 60, desc: "Measure this <strong>acute angle</strong>. Align the protractor center to the vertex and rotate it to the baseline!" },
+  { angleOffset: -40, angleSize: 90, desc: "Measure this <strong>right angle</strong>. Find the <strong>90° square corner</strong> measure!" },
+  { angleOffset: 45, angleSize: 120, desc: "Measure this <strong>obtuse angle</strong>. Read the wide scale carefully!" }
 ];
 
 export default function ProtractorStation({ onStationComplete, setStationBPerfect }) {
@@ -98,16 +98,11 @@ export default function ProtractorStation({ onStationComplete, setStationBPerfec
   // Stepper positioning controls for accessibility
   const moveCenter = (dx, dy) => {
     sounds.click();
-    if (isAligned) return;
-    setProtractorCenter(c => ({
-      x: Math.max(10, Math.min(290, c.x + dx)),
-      y: Math.max(10, Math.min(290, c.y + dy))
-    }));
+    setProtractorCenter(c => ({ x: c.x + dx, y: c.y + dy }));
   };
 
   const rotateProtractor = (delta) => {
     sounds.click();
-    if (isAligned) return;
     setProtractorRot(r => (r + delta + 360) % 360);
   };
 
@@ -119,16 +114,10 @@ export default function ProtractorStation({ onStationComplete, setStationBPerfec
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isAligned) {
-      sounds.wrong();
-      setFeedback({ type: 'wrong', message: 'Not aligned!', sub: 'Please align the protractor to the angle baseline first!' });
-      return;
-    }
-
     const value = parseInt(inputVal, 10);
     if (value === currentRound.angleSize) {
       sounds.correct();
-      setFeedback({ type: 'correct', message: 'Perfect! 🎉', sub: `Correct reading: ${currentRound.angleSize}°!` });
+      setFeedback({ type: 'correct', message: 'Spot on! 🎉', sub: `Correct! This angle measures exactly ${currentRound.angleSize}°.` });
       setTimeout(() => {
         if (round + 1 < ROUNDS.length) {
           setRound(r => r + 1);
@@ -138,14 +127,9 @@ export default function ProtractorStation({ onStationComplete, setStationBPerfec
       }, 2000);
     } else {
       sounds.wrong();
-      setWrongCount(w => {
-        const nextW = w + 1;
-        if (nextW > 0) {
-          setStationBPerfect(false); // Player lost perfect run for Station B
-        }
-        return nextW;
-      });
-      setFeedback({ type: 'wrong', message: 'Not quite!', sub: `Look closer at the protractor markings. Check the arc size!` });
+      setWrongCount(w => w + 1);
+      if (setStationBPerfect) setStationBPerfect(false);
+      setFeedback({ type: 'wrong', message: 'Not quite!', sub: `Check the protractor scale again! Make sure you are reading from the baseline 0°.` });
     }
   };
 

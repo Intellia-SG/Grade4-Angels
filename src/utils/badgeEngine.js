@@ -14,7 +14,7 @@ export const BADGES = [
   {
     id: 'geometry_champion',
     label: '🥇 Geometry Champion',
-    description: 'Score 80%+ in Play phase (80+ correct answers)',
+    description: 'Score 80%+ in Practice phase (80+ correct answers)',
     condition: (s) => {
       const results = Object.values(s.worldScores || {});
       if (results.length === 0) return false;

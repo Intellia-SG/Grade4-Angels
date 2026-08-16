@@ -97,10 +97,16 @@ export default function PlayPhase({
     }
   }, [questionIndex, sessionQuestions, activeWorldId, showWorldComplete, showFailed]);
 
+  const [attemptsOnQuestion, setAttemptsOnQuestion] = useState(0);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [wrongShakeOption, setWrongShakeOption] = useState(null);
+
   const handleOptionSelect = (option) => {
     if (isAnswered) return;
     sounds.click();
     setSelectedOption(option);
+    setWrongShakeOption(null);
   };
 
   const handleSubmitAnswer = () => {
@@ -108,10 +114,10 @@ export default function PlayPhase({
     
     const q = sessionQuestions[questionIndex];
     const correct = selectedOption === q.correctAnswer;
-    setIsAnswered(true);
-    setIsCorrect(correct);
-
+    
     if (correct) {
+      setIsAnswered(true);
+      setIsCorrect(true);
       sounds.correct();
       const nextStreak = streak + 1;
       setStreak(nextStreak);
@@ -132,17 +138,23 @@ export default function PlayPhase({
       autoAdvanceTimeoutRef.current = setTimeout(() => {
         if (questionIndex + 1 < sessionQuestions.length) {
           setQuestionIndex(i => i + 1);
+          setAttemptsOnQuestion(0);
         } else {
-          // Completed World!
           handleWorldComplete(worldScore + 1);
         }
-      }, 2000);
+      }, 2200);
     } else {
       sounds.wrong();
       setStreak(0);
+      setWrongShakeOption(selectedOption);
+      const nextAttempts = attemptsOnQuestion + 1;
+      setAttemptsOnQuestion(nextAttempts);
+
       setLives(l => {
         const nextL = l - 1;
         if (nextL <= 0) {
+          setIsAnswered(true);
+          setIsCorrect(false);
           setShowFailed(true);
           if (audioEnabled) {
             narrationRef.current = narrate([ { text: "Oh no! You ran out of hearts. Let's return to the map and try again!", style: 'thinking', pause: 0 } ], true);
@@ -151,8 +163,21 @@ export default function PlayPhase({
         return nextL;
       });
 
-      if (audioEnabled) {
-        narrationRef.current = narrate(playWrongNarration(), true);
+      if (nextAttempts >= 2) {
+        setIsAnswered(true);
+        setIsCorrect(false);
+        if (audioEnabled) {
+          narrationRef.current = narrate(playWrongNarration(), true);
+        }
+      } else {
+        // First wrong attempt: auto show hint & allow retry!
+        const nextHint = Math.min(2, showHint + 1);
+        setShowHint(nextHint);
+        setHintsUsed(h => h + 1);
+        if (audioEnabled) {
+          const hintText = nextHint === 1 ? q.hint1 : q.hint2;
+          narrationRef.current = narrate([ { text: `Incorrect attempt! ${hintText}`, style: 'encouragement', pause: 0 } ], true);
+        }
       }
     }
   };
@@ -165,6 +190,8 @@ export default function PlayPhase({
     sounds.click();
     setSelectedOption(null);
     setIsAnswered(false);
+    setAttemptsOnQuestion(0);
+    setWrongShakeOption(null);
     if (questionIndex + 1 < sessionQuestions.length) {
       setQuestionIndex(i => i + 1);
     } else {
@@ -174,8 +201,16 @@ export default function PlayPhase({
 
   const handleUseHint = () => {
     sounds.click();
+    const nextHint = Math.min(2, showHint + 1);
     setHintsUsed(h => h + 1);
-    setShowHint(h => Math.min(2, h + 1));
+    setShowHint(nextHint);
+    setShowHintModal(true);
+
+    const q = sessionQuestions[questionIndex];
+    const hintText = nextHint === 1 ? q.hint1 : q.hint2;
+    if (audioEnabled && hintText) {
+      narrationRef.current = narrate([ { text: `Hint: ${hintText}`, style: 'instruction', pause: 0 } ], true);
+    }
   };
 
   const handleWorldComplete = (finalScore) => {
@@ -202,7 +237,6 @@ export default function PlayPhase({
       badges
     };
 
-    // If all 10 completed, play is complete
     const keys = Object.keys(updatedScores);
     if (keys.length === 10) {
       mockState.phaseComplete.play = true;
@@ -212,7 +246,7 @@ export default function PlayPhase({
     if (newBadges.length > 0) {
       sounds.badge();
       setBadges(prev => [...prev, ...newBadges]);
-      setBadgeToast(newBadges[0]); // show first new badge
+      setBadgeToast(newBadges[0]);
       setTimeout(() => {
         setBadgeToast(null);
       }, 4000);
@@ -229,6 +263,7 @@ export default function PlayPhase({
     setQuestionIndex(0);
     setSelectedOption(null);
     setIsAnswered(false);
+    setAttemptsOnQuestion(0);
     setShowHint(0);
     setHintsUsed(0);
     setShowFailed(false);
@@ -237,6 +272,7 @@ export default function PlayPhase({
 
   const exitToMap = () => {
     sounds.click();
+    setShowExitConfirm(false);
     setActiveWorldId(null);
   };
 
@@ -327,7 +363,7 @@ export default function PlayPhase({
     <div className="play-phase">
       {/* Quiz HUD */}
       <div className="hud">
-        <button className="home-btn" onClick={exitToMap} style={{ position: 'static' }}>
+        <button className="home-btn" onClick={() => setShowExitConfirm(true)} style={{ position: 'static' }}>
           ◀ Map
         </button>
         <div style={{ display: 'flex', gap: 12 }}>
@@ -363,9 +399,11 @@ export default function PlayPhase({
           {q.options.map((opt, i) => {
             const isSel = selectedOption === opt;
             const isCorrectOpt = opt === q.correctAnswer;
+            const isShake = wrongShakeOption === opt;
             
             let btnClass = '';
             if (isSel) btnClass += ' selected';
+            if (isShake) btnClass += ' wrong-shake';
             if (isAnswered) {
               btnClass += ' disabled';
               if (isCorrectOpt) btnClass += ' correct';
@@ -428,31 +466,68 @@ export default function PlayPhase({
             fontSize: '0.9rem',
             textAlign: 'left'
           }}>
-            <strong>{isCorrect ? '✅ Spot on!' : '❌ Not quite.'}</strong>
+            <strong>{isCorrect ? '✅ Fantastic Work! Spot on!' : '❌ Let\'s Review!'}</strong>
             <p style={{ marginTop: 4, color: 'var(--text-secondary)' }}>{q.explanation}</p>
           </div>
         )}
       </div>
 
-      {/* Mascot bubble companion */}
+      {/* Mascot Companion */}
       <div className="mascot-container" style={{ marginTop: 16 }}>
         <div className={`mascot ${isAnswered ? (isCorrect ? 'happy' : 'thinking') : 'thinking'}`}>
-          {isAnswered ? (isCorrect ? '🤖' : '🤖') : '🤖'}
+          🤖
         </div>
-        <div className="speech-bubble" style={{ fontSize: '0.8rem' }}>
+        <div className="speech-bubble" style={{ fontSize: '0.85rem' }}>
           {isAnswered 
-            ? (isCorrect ? "Brilliant! You've got a sharp eye!" : "Oops! Let's check the explanation and try the next one.")
-            : "Use the hints if you get stuck! We learn by trying!"}
+            ? (isCorrect ? "Fantastic Work! You've got a sharp eye for angles!" : "Let's learn from this explanation and tackle the next challenge!")
+            : "Think about the angle type or turn degrees! Use hints if needed!"}
         </div>
       </div>
 
-      {/* World Complete Overlay */}
+      {/* Animated Hint Popup Modal */}
+      {showHintModal && (
+        <div className="modal-backdrop" onClick={() => setShowHintModal(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>💡</div>
+            <h3 className="modal-title">Helpful Hint</h3>
+            <p className="modal-body">
+              <strong>Hint {showHint}:</strong> {showHint === 1 ? q.hint1 : q.hint2}
+            </p>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowHintModal(false)} style={{ marginTop: 16 }}>
+              Got It! 👍
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Animated Exit Confirmation Modal */}
+      {showExitConfirm && (
+        <div className="modal-backdrop" onClick={() => setShowExitConfirm(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>🗺️</div>
+            <h3 className="modal-title">Return to World Map?</h3>
+            <p className="modal-body">
+              Are you sure you want to exit to the World Map? Your current XP and completed scores will be saved!
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 20 }}>
+              <button className="btn btn-outline btn-sm" onClick={() => setShowExitConfirm(false)}>
+                Keep Practicing
+              </button>
+              <button className="btn btn-primary btn-sm" onClick={exitToMap}>
+                Yes, Exit to Map
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* World Complete Overlay Modal */}
       {showWorldComplete && (
-        <div className="feedback-overlay">
-          <div className="world-complete-card">
-            <div className="world-complete-icon">🏙️</div>
-            <div className="world-complete-title">World Completed!</div>
-            <p className="wonder-subtext">You cleared {WORLDS[activeWorldId].name}!</p>
+        <div className="modal-backdrop">
+          <div className="world-complete-card modal-card">
+            <div className="world-complete-icon">🎉</div>
+            <div className="world-complete-title">Level Complete!</div>
+            <p className="wonder-subtext">Congratulations! You cleared {WORLDS[activeWorldId].name}!</p>
             
             <div className="world-complete-score">Score: {worldScore}/10</div>
             
@@ -469,7 +544,7 @@ export default function PlayPhase({
               ))}
             </div>
 
-            <p style={{ fontSize: '0.85rem', marginBottom: 20 }}>
+            <p style={{ fontSize: '0.9rem', marginBottom: 20 }}>
               XP Earned: <span className="world-complete-xp">+{worldScore * 10} XP</span>
             </p>
 
@@ -480,14 +555,14 @@ export default function PlayPhase({
         </div>
       )}
 
-      {/* Hearts Failed Overlay */}
+      {/* Out of Hearts Modal Overlay */}
       {showFailed && (
-        <div className="feedback-overlay">
-          <div className="world-complete-card" style={{ border: '2px solid var(--red)' }}>
+        <div className="modal-backdrop">
+          <div className="world-complete-card modal-card" style={{ border: '2px solid var(--red)' }}>
             <div className="world-complete-icon">💔</div>
             <div className="world-complete-title">Out of Hearts!</div>
             <p className="wonder-subtext" style={{ marginBottom: 20 }}>
-              No hearts left. Review the angle helpers and try again!
+              No hearts left for this landmark. Review your angle types and let's try again!
             </p>
             
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>

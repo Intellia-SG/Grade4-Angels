@@ -90,10 +90,10 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
           <div className="speech-bubble wonder-bubble">
             {step === 0 ? (
               bookState === 'closed'
-                ? "Sarah opens her book a little, and Mike opens it flat. Let's see the angle they make!"
+                ? "Wei Ming opens a book just a little (35°), and then opens it all the way flat (180°). Let's see the angle of turn!"
                 : bookState === 'sarah'
-                ? "Look at the small corner! Sarah's book makes a tiny turn angle."
-                : "Mike's book is wide open! It makes a flat straight line angle."
+                ? "Look at the small turn! Wei Ming's book makes a sharp 35° acute angle."
+                : "Wei Ming's book is opened flat! It forms a 180° straight angle."
             ) : (
               "An angle measures the turn between two lines! Let's discover how to measure them!"
             )}
@@ -105,7 +105,7 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
             <div>
               <div className="wonder-emoji">📖</div>
               <h2 className="wonder-question-text">
-                Sarah opens her book just a little bit. Mike opens his book all the way flat. Whose book makes a bigger angle?
+                <strong>Wei Ming</strong> opens a book slightly (35°) versus opening it completely flat (180°). Which turn creates a <strong>bigger angle</strong>?
               </h2>
               
               {/* Interactive Book Edge SVG */}
@@ -132,9 +132,9 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
                   
                   {/* Degree text badge */}
                   <g transform="translate(150, 190)">
-                    <rect x="-50" y="-14" width="100" height="24" rx="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.1)" />
+                    <rect x="-65" y="-14" width="130" height="24" rx="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.1)" />
                     <text x="0" y="3" fill="var(--gold)" fontSize="0.85rem" fontWeight="bold" textAnchor="middle">
-                      {bookState === 'closed' ? 'Closed (0°)' : bookState === 'sarah' ? 'Sarah (35°)' : 'Mike (180°)'}
+                      {bookState === 'closed' ? 'Closed (0°)' : bookState === 'sarah' ? 'Slight Open (35°)' : 'Flat Open (180°)'}
                     </text>
                   </g>
                 </svg>
@@ -146,13 +146,13 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
                   className={`btn btn-sm ${bookState === 'sarah' ? 'btn-primary' : 'btn-outline'}`}
                   onClick={() => handleBookStateChange('sarah')}
                 >
-                  Sarah's Book (35°)
+                  Slight Turn (35°)
                 </button>
                 <button
                   className={`btn btn-sm ${bookState === 'mike' ? 'btn-primary' : 'btn-outline'}`}
                   onClick={() => handleBookStateChange('mike')}
                 >
-                  Mike's Book (180°)
+                  Flat Open (180°)
                 </button>
               </div>
             </div>
@@ -160,10 +160,10 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
             <div>
               <div className="wonder-emoji">✨</div>
               <h2 className="wonder-question-text">
-                An angle is a measurement of how much something turns!
+                An <strong>angle</strong> is a measurement of how much something <strong>turns</strong>!
               </h2>
               <p className="wonder-subtext" style={{ fontSize: '1.05rem', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                When we open a door, spin a wheel, or open a book, we are creating angles. A bigger turn means a bigger angle. Let's learn more about the types of turns we can make!
+                When we open a door, spin a wheel, or open a book, we create <strong>angles</strong>. A <strong>bigger turn</strong> means a <strong>bigger angle</strong>. Let's explore the world with <strong>Wei Ming</strong> and learn all about angles!
               </p>
             </div>
           )}

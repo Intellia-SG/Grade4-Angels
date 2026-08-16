@@ -84,15 +84,35 @@ export function speak(text, enabled = true, style = 'statement') {
 
       currentAudio = new Audio(audioUrl);
       currentAudio.onended = () => { isSpeaking = false; resolve(); };
-      currentAudio.onerror = () => { isSpeaking = false; resolve(); };
+      currentAudio.onerror = () => { fallbackTTS(text, currentPlayId, resolve); };
       await currentAudio.play();
       return;
     } catch (error) {
-      // Degrade silently (no narration)
+      fallbackTTS(text, currentPlayId, resolve);
+    }
+  });
+}
+
+function fallbackTTS(text, currentPlayId, resolve) {
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+      // Remove emojis or special symbols before speech synthesis
+      const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.05;
+      utterance.onend = () => { if (currentPlayId === playId) isSpeaking = false; resolve(); };
+      utterance.onerror = () => { if (currentPlayId === playId) isSpeaking = false; resolve(); };
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
       isSpeaking = false;
       resolve();
     }
-  });
+  } else {
+    isSpeaking = false;
+    resolve();
+  }
 }
 
 // ─── Narration Segment Types ────────────────────
@@ -166,6 +186,9 @@ export function stopNarration() {
     currentAudio.pause(); 
     currentAudio.currentTime = 0; 
     currentAudio = null; 
+  }
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
   }
   isSpeaking = false;
 }

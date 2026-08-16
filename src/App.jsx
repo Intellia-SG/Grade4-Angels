@@ -8,23 +8,24 @@ import ReflectPhase from './components/phases/ReflectPhase';
 import { sounds, stopNarration } from './utils/audio';
 
 const FLOATING_ITEMS = [
-  { char: '📐', size: '2rem', delay: '0s', duration: '20s', left: '10%', color: 'rgba(76, 175, 80, 0.22)' }, // acute green
+  { char: '📐', size: '2rem', delay: '0s', duration: '20s', left: '10%', color: 'rgba(76, 175, 80, 0.22)' },
   { char: 'θ', size: '2.5rem', delay: '3s', duration: '25s', left: '80%', color: 'rgba(255, 255, 255, 0.15)' },
   { char: '°', size: '3.2rem', delay: '6s', duration: '18s', left: '30%', color: 'rgba(255, 255, 255, 0.15)' },
-  { char: '∠', size: '2.2rem', delay: '1s', duration: '22s', left: '70%', color: 'rgba(74, 144, 217, 0.22)' }, // right blue
+  { char: '∠', size: '2.2rem', delay: '1s', duration: '22s', left: '70%', color: 'rgba(74, 144, 217, 0.22)' },
   { char: '⦝', size: '1.8rem', delay: '8s', duration: '30s', left: '15%', color: 'rgba(255, 255, 255, 0.15)' },
   { char: '⦞', size: '2rem', delay: '12s', duration: '27s', left: '88%', color: 'rgba(255, 255, 255, 0.15)' },
-  { char: '⦟', size: '2.4rem', delay: '4s', duration: '24s', left: '45%', color: 'rgba(255, 255, 255, 0.15)' },
-  { char: '◿', size: '2.8rem', delay: '10s', duration: '21s', left: '55%', color: 'rgba(255, 255, 255, 0.15)' },
-  // Floating angle numbers with themed colors
-  { char: '90°', size: '1.8rem', delay: '2s', duration: '23s', left: '25%', color: 'rgba(74, 144, 217, 0.25)' },  // right blue
-  { char: '180°', size: '2rem', delay: '5s', duration: '28s', left: '75%', color: 'rgba(156, 39, 176, 0.25)' },  // straight purple
-  { char: '360°', size: '2.2rem', delay: '9s', duration: '26s', left: '5%', color: 'rgba(255, 193, 7, 0.25)' },   // full gold
-  { char: '45°', size: '1.6rem', delay: '11s', duration: '21s', left: '60%', color: 'rgba(76, 175, 80, 0.25)' },  // acute green
-  { char: '60°', size: '1.7rem', delay: '7s', duration: '24s', left: '38%', color: 'rgba(76, 175, 80, 0.25)' },   // acute green
-  { char: '120°', size: '1.9rem', delay: '13s', duration: '29s', left: '92%', color: 'rgba(255, 152, 0, 0.25)' }, // obtuse orange
-  { char: '270°', size: '2.1rem', delay: '15s', duration: '22s', left: '50%', color: 'rgba(229, 57, 53, 0.25)' },  // reflex red
-  { char: '30°', size: '1.5rem', delay: '16s', duration: '20s', left: '18%', color: 'rgba(76, 175, 80, 0.25)' }   // acute green
+  { char: '90°', size: '1.8rem', delay: '2s', duration: '23s', left: '25%', color: 'rgba(74, 144, 217, 0.25)' },
+  { char: '180°', size: '2rem', delay: '5s', duration: '28s', left: '75%', color: 'rgba(156, 39, 176, 0.25)' },
+  { char: '360°', size: '2.2rem', delay: '9s', duration: '26s', left: '5%', color: 'rgba(255, 193, 7, 0.25)' },
+  { char: '45°', size: '1.6rem', delay: '11s', duration: '21s', left: '60%', color: 'rgba(76, 175, 80, 0.25)' },
+  /* Faint large rotated background numbers matching reference image */
+  { char: '187', size: '3.4rem', delay: '4s', duration: '32s', left: '7%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(-25deg)' },
+  { char: '142', size: '3.8rem', delay: '10s', duration: '35s', left: '90%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(15deg)' },
+  { char: '81', size: '3.6rem', delay: '2s', duration: '30s', left: '84%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(-40deg)' },
+  { char: '64', size: '3rem', delay: '14s', duration: '28s', left: '56%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(20deg)' },
+  { char: '100', size: '3.5rem', delay: '8s', duration: '34s', left: '11%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(30deg)' },
+  { char: '5', size: '2.8rem', delay: '6s', duration: '26s', left: '74%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(-15deg)' },
+  { char: '2', size: '2.5rem', delay: '12s', duration: '24s', left: '14%', color: 'rgba(255, 255, 255, 0.08)', transform: 'rotate(10deg)' }
 ];
 
 export default function App() {
@@ -184,7 +185,8 @@ export default function App() {
               fontSize: item.size,
               animationDelay: item.delay,
               animationDuration: item.duration,
-              color: item.color || 'rgba(255, 255, 255, 0.15)'
+              color: item.color || 'rgba(255, 255, 255, 0.15)',
+              transform: item.transform || 'none'
             }}
           >
             {item.char}
@@ -216,7 +218,7 @@ export default function App() {
           <div className={`journey-connector ${phaseComplete.story ? 'filled' : ''}`} />
           {renderJourneyStep('simulate', 3, 'Simulate')}
           <div className={`journey-connector ${phaseComplete.simulate ? 'filled' : ''}`} />
-          {renderJourneyStep('play', 4, 'Play Map')}
+          {renderJourneyStep('play', 4, 'Practice')}
           <div className={`journey-connector ${phaseComplete.play ? 'filled' : ''}`} />
           {renderJourneyStep('reflect', 5, 'Reflect')}
         </div>

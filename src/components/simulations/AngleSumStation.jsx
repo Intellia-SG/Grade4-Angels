@@ -7,7 +7,7 @@ const ROUNDS = [
     equation: '110° + x = 180°',
     variable: 'x',
     correctAnswer: 70,
-    desc: 'Angles on a straight line always add up to 180°. Solve for x!',
+    desc: 'Angles on a straight line <strong>always add up to 180°</strong>. Solve for <strong>x</strong>!',
     angleA: 110,
     hint: 'Subtract 110 from 180: 180 - 110 = ?'
   },
@@ -16,7 +16,7 @@ const ROUNDS = [
     equation: '120° + 140° + y = 360°',
     variable: 'y',
     correctAnswer: 100,
-    desc: 'Angles all the way around a point always add up to 360°. Solve for y!',
+    desc: 'Angles all the way around a point <strong>always add up to 360°</strong>. Solve for <strong>y</strong>!',
     angleA: 120,
     angleB: 140,
     hint: 'Add the two angles: 120 + 140 = 260. Then subtract from 360: 360 - 260 = ?'
@@ -26,7 +26,7 @@ const ROUNDS = [
     equation: '35° + z = 90°',
     variable: 'z',
     correctAnswer: 55,
-    desc: 'Angles inside a right angle corner always add up to 90°. Solve for z!',
+    desc: 'Angles inside a right angle corner <strong>always add up to 90°</strong>. Solve for <strong>z</strong>!',
     angleA: 35,
     hint: 'Subtract 35 from 90: 90 - 35 = ?'
   }
@@ -72,81 +72,53 @@ export default function AngleSumStation({ onStationComplete }) {
 
   const renderSVG = () => {
     switch (currentRound.type) {
-      case 'straight_line': // 110 + x = 180
+      case 'straight_line':
         return (
           <svg width="100%" height="100%" viewBox="0 0 300 200">
-            {/* Straight Line base */}
             <line x1="30" y1="150" x2="270" y2="150" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
             <circle cx="150" cy="150" r="6" fill="var(--gold)" />
             
-            {/* Splitting Ray at 110 degrees */}
-            {/* Rad = (180 - 110) * PI / 180 = 70 * PI / 180 */}
             <line x1="150" y1="150" x2="115" y2="55" stroke="var(--blue-bright)" strokeWidth="4" strokeLinecap="round" />
             
-            {/* Angle Arcs */}
-            {/* Left Arc: 110° */}
             <path d="M 120 150 A 30 30 0 0 0 138 118" fill="none" stroke="var(--gold)" strokeWidth="2.5" />
             <text x="95" y="125" fill="var(--gold)" fontSize="0.85rem" fontWeight="bold">110°</text>
 
-            {/* Right Arc: x */}
             <path d="M 138 118 A 30 30 0 0 0 180 150" fill="none" stroke="#f43f5e" strokeWidth="2.5" />
             <text x="180" y="125" fill="#f43f5e" fontSize="0.95rem" fontWeight="bold">x</text>
           </svg>
         );
-      case 'around_point': // 120 + 140 + y = 360
+      case 'around_point':
         return (
           <svg width="100%" height="100%" viewBox="0 0 300 200">
-            {/* Center vertex */}
             <circle cx="150" cy="100" r="6" fill="#ffffff" />
-            
-            {/* Ray 1 (0 degrees, right) */}
-            <line x1="150" y1="100" x2="240" y2="100" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
-            
-            {/* Ray 2 (120 degrees counter-clockwise) */}
-            {/* 150 + 90 * cos(120), 100 - 90 * sin(120) */}
-            <line x1="150" y1="100" x2="105" y2="22" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
+            <line x1="150" y1="100" x2="230" y2="100" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            <line x1="150" y1="100" x2="110" y2="30" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            <line x1="150" y1="100" x2="100" y2="150" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
 
-            {/* Ray 3 (120 + 140 = 260 degrees counter-clockwise) */}
-            {/* 150 + 90 * cos(260), 100 - 90 * sin(260) */}
-            <line x1="150" y1="100" x2="134" y2="188" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M 175 100 A 25 25 0 0 0 162 78" fill="none" stroke="var(--gold)" strokeWidth="2.5" />
+            <text x="175" y="80" fill="var(--gold)" fontSize="0.85rem" fontWeight="bold">120°</text>
 
-            {/* Angle Arcs & Labels */}
-            {/* 120° Arc */}
-            <path d="M 180 100 A 30 30 0 0 0 135 74" fill="none" stroke="var(--gold)" strokeWidth="2.5" />
-            <text x="175" y="75" fill="var(--gold)" fontSize="0.75rem" fontWeight="bold">120°</text>
+            <path d="M 162 78 A 25 25 0 0 0 145 125" fill="none" stroke="var(--blue-bright)" strokeWidth="2.5" />
+            <text x="110" y="110" fill="var(--blue-bright)" fontSize="0.85rem" fontWeight="bold">140°</text>
 
-            {/* 140° Arc */}
-            <path d="M 135 74 A 30 30 0 0 0 145 130" fill="none" stroke="var(--blue-bright)" strokeWidth="2.5" />
-            <text x="100" y="115" fill="var(--blue-bright)" fontSize="0.75rem" fontWeight="bold">140°</text>
-
-            {/* y Arc */}
-            <path d="M 145 130 A 30 30 0 0 0 180 100" fill="none" stroke="#f43f5e" strokeWidth="2.5" />
-            <text x="182" y="132" fill="#f43f5e" fontSize="0.95rem" fontWeight="bold">y</text>
+            <path d="M 145 125 A 25 25 0 0 0 175 100" fill="none" stroke="#f43f5e" strokeWidth="2.5" />
+            <text x="170" y="130" fill="#f43f5e" fontSize="0.95rem" fontWeight="bold">y</text>
           </svg>
         );
-      case 'right_angle': // 35 + z = 90
+      case 'right_angle':
         return (
           <svg width="100%" height="100%" viewBox="0 0 300 200">
-            {/* Corner Base and Vertical */}
-            <line x1="100" y1="160" x2="220" y2="160" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
-            <line x1="100" y1="160" x2="100" y2="40" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" strokeDasharray="4,3" />
-            <circle cx="100" cy="160" r="6" fill="var(--gold)" />
+            <line x1="50" y1="160" x2="250" y2="160" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            <line x1="150" y1="160" x2="150" y2="40" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            <circle cx="150" cy="160" r="6" fill="var(--gold)" />
 
-            {/* Right Angle Corner box */}
-            <rect x="100" y="140" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
+            <line x1="150" y1="160" x2="215" y2="115" stroke="var(--blue-bright)" strokeWidth="4" strokeLinecap="round" />
 
-            {/* Splitting Ray at 35 degrees */}
-            {/* 100 + 110 * cos(35), 160 - 110 * sin(35) */}
-            <line x1="100" y1="160" x2="190" y2="97" stroke="var(--blue-bright)" strokeWidth="4" strokeLinecap="round" />
+            <path d="M 180 160 A 30 30 0 0 0 175 142" fill="none" stroke="var(--gold)" strokeWidth="2.5" />
+            <text x="185" y="155" fill="var(--gold)" fontSize="0.85rem" fontWeight="bold">35°</text>
 
-            {/* Arcs */}
-            {/* 35° Arc */}
-            <path d="M 140 160 A 40 40 0 0 0 133 137" fill="none" stroke="var(--gold)" strokeWidth="2.5" />
-            <text x="155" y="152" fill="var(--gold)" fontSize="0.85rem" fontWeight="bold">35°</text>
-
-            {/* z Arc */}
-            <path d="M 133 137 A 40 40 0 0 0 100 120" fill="none" stroke="#f43f5e" strokeWidth="2.5" />
-            <text x="115" y="105" fill="#f43f5e" fontSize="0.95rem" fontWeight="bold">z</text>
+            <path d="M 175 142 A 30 30 0 0 0 150 130" fill="none" stroke="#f43f5e" strokeWidth="2.5" />
+            <text x="160" y="125" fill="#f43f5e" fontSize="0.95rem" fontWeight="bold">z</text>
           </svg>
         );
       default:
@@ -157,8 +129,12 @@ export default function AngleSumStation({ onStationComplete }) {
   return (
     <div className="station-content">
       <div className="station-header">
-        <h2>Round {round + 1} of 3: Find the missing angle</h2>
-        <p className="wonder-subtext" style={{ marginBottom: 8 }}>{currentRound.desc}</p>
+        <h2>Round {round + 1} of 3: <strong>Find the missing angle</strong></h2>
+        <p 
+          className="wonder-subtext" 
+          style={{ marginBottom: 8 }}
+          dangerouslySetInnerHTML={{ __html: currentRound.desc }}
+        />
       </div>
 
       <div className="interaction-area" style={{ width: 300, height: 210, padding: 0 }}>

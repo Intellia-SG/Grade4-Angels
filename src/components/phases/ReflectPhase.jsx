@@ -45,7 +45,7 @@ export default function ReflectPhase({ xp, worldScores, badges, audioEnabled, on
   const [selectedOpt, setSelectedOpt] = useState(null);
   const [answered, setAnswered] = useState(false);
   const [confidence, setConfidence] = useState(null);
-  const [playerName, setPlayerName] = useState('Geometry Explorer');
+  const [playerName, setPlayerName] = useState('Wei Ming');
   const [confetti, setConfetti] = useState([]);
   const narrationRef = useRef(null);
 
