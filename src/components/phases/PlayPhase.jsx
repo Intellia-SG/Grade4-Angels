@@ -175,8 +175,7 @@ export default function PlayPhase({
         setShowHint(nextHint);
         setHintsUsed(h => h + 1);
         if (audioEnabled) {
-          const hintText = nextHint === 1 ? q.hint1 : q.hint2;
-          narrationRef.current = narrate([ { text: `Incorrect attempt! ${hintText}`, style: 'encouragement', pause: 0 } ], true);
+          narrationRef.current = narrate(playWrongNarration(), true);
         }
       }
     }

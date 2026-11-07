@@ -39,24 +39,28 @@ export async function getAudioUrl(text, style) {
     const localApiKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
     const voiceSettings = getElevenLabsSettings(style);
 
-    // Fallback directly to ElevenLabs API if key is present
+    // Dynamic generation via ElevenLabs API if key is present
     if (localApiKey) {
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          'xi-api-key': localApiKey 
-        },
-        body: JSON.stringify({ 
-          text, 
-          model_id: 'eleven_multilingual_v2', 
-          voice_settings: voiceSettings 
-        })
-      });
+      try {
+        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json', 
+            'xi-api-key': localApiKey 
+          },
+          body: JSON.stringify({ 
+            text, 
+            model_id: 'eleven_multilingual_v2', 
+            voice_settings: voiceSettings 
+          })
+        });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        return URL.createObjectURL(blob);
+        if (response.ok) {
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        }
+      } catch (e) {
+        // Network or fetch failure: silent skip
       }
     }
 
@@ -83,36 +87,22 @@ export function speak(text, enabled = true, style = 'statement') {
       if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
 
       currentAudio = new Audio(audioUrl);
-      currentAudio.onended = () => { isSpeaking = false; resolve(); };
-      currentAudio.onerror = () => { fallbackTTS(text, currentPlayId, resolve); };
+      currentAudio.onended = () => { 
+        if (currentPlayId === playId) isSpeaking = false; 
+        resolve(); 
+      };
+      currentAudio.onerror = () => { 
+        if (currentPlayId === playId) isSpeaking = false; 
+        resolve(); 
+      };
       await currentAudio.play();
       return;
     } catch (error) {
-      fallbackTTS(text, currentPlayId, resolve);
-    }
-  });
-}
-
-function fallbackTTS(text, currentPlayId, resolve) {
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    try {
-      window.speechSynthesis.cancel();
-      // Remove emojis or special symbols before speech synthesis
-      const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.rate = 0.95;
-      utterance.pitch = 1.05;
-      utterance.onend = () => { if (currentPlayId === playId) isSpeaking = false; resolve(); };
-      utterance.onerror = () => { if (currentPlayId === playId) isSpeaking = false; resolve(); };
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      isSpeaking = false;
+      // Audio narration unavailable or failed — silent skip, NO default or browser Web Speech API fallback
+      if (currentPlayId === playId) isSpeaking = false;
       resolve();
     }
-  } else {
-    isSpeaking = false;
-    resolve();
-  }
+  });
 }
 
 // ─── Narration Segment Types ────────────────────
@@ -186,9 +176,6 @@ export function stopNarration() {
     currentAudio.pause(); 
     currentAudio.currentTime = 0; 
     currentAudio = null; 
-  }
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    try { window.speechSynthesis.cancel(); } catch (e) {}
   }
   isSpeaking = false;
 }

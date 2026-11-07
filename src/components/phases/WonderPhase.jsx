@@ -90,10 +90,10 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
           <div className="speech-bubble wonder-bubble">
             {step === 0 ? (
               bookState === 'closed'
-                ? "Wei Ming opens a book just a little (35°), and then opens it all the way flat (180°). Let's see the angle of turn!"
+                ? "Sarah opens a book just a little (35°), and then Mike opens his book all the way flat (180°). Let's see the angle of turn!"
                 : bookState === 'sarah'
-                ? "Look at the small turn! Wei Ming's book makes a sharp 35° acute angle."
-                : "Wei Ming's book is opened flat! It forms a 180° straight angle."
+                ? "Look at the small turn! Sarah's book makes a sharp 35° acute angle."
+                : "Mike's book is opened flat! It forms a 180° straight angle."
             ) : (
               "An angle measures the turn between two lines! Let's discover how to measure them!"
             )}
@@ -105,7 +105,7 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
             <div>
               <div className="wonder-emoji">📖</div>
               <h2 className="wonder-question-text">
-                <strong>Wei Ming</strong> opens a book slightly (35°) versus opening it completely flat (180°). Which turn creates a <strong>bigger angle</strong>?
+                <strong>Sarah</strong> opens her book slightly (35°) versus <strong>Mike</strong> opening his completely flat (180°). Whose book makes a <strong>bigger angle</strong>?
               </h2>
               
               {/* Interactive Book Edge SVG */}
@@ -146,13 +146,13 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
                   className={`btn btn-sm ${bookState === 'sarah' ? 'btn-primary' : 'btn-outline'}`}
                   onClick={() => handleBookStateChange('sarah')}
                 >
-                  Slight Turn (35°)
+                  Sarah's Book (35°)
                 </button>
                 <button
                   className={`btn btn-sm ${bookState === 'mike' ? 'btn-primary' : 'btn-outline'}`}
                   onClick={() => handleBookStateChange('mike')}
                 >
-                  Flat Open (180°)
+                  Mike's Book (180°)
                 </button>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function WonderPhase({ onComplete, audioEnabled }) {
                 An <strong>angle</strong> is a measurement of how much something <strong>turns</strong>!
               </h2>
               <p className="wonder-subtext" style={{ fontSize: '1.05rem', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                When we open a door, spin a wheel, or open a book, we create <strong>angles</strong>. A <strong>bigger turn</strong> means a <strong>bigger angle</strong>. Let's explore the world with <strong>Wei Ming</strong> and learn all about angles!
+                When we open a door, spin a wheel, or open a book, we create <strong>angles</strong>. A <strong>bigger turn</strong> means a <strong>bigger angle</strong>. Let's explore the world and learn all about angles!
               </p>
             </div>
           )}

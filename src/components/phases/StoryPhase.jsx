@@ -5,44 +5,44 @@ import { playStoryNarration } from '../../utils/narration';
 const STORY_PANELS = [
   {
     title: "Eiffel Tower — Paris, France 🗼",
-    text: "<strong>Wei Ming</strong> lands in Paris. The <strong>Eiffel Tower's</strong> legs lean out, making an <strong>acute angle</strong> at the ground.",
+    text: "<strong>John</strong> lands in Paris. The <strong>Eiffel Tower's</strong> legs lean out, making an <strong>acute angle</strong> at the ground.",
     highlight: "<strong>Acute Angle</strong>: Smaller than a <strong>90°</strong> corner!",
-    character: "Wei Ming",
+    character: "John",
     landmark: "Eiffel Tower"
   },
   {
     title: "What is an Acute Angle? 📐",
     text: "A turn that is smaller than a perfect square corner is called an <strong>acute angle</strong>. It measures between <strong>0° and 90°</strong>.",
     highlight: "<strong>Acute Angle</strong>: 0° to 90° (Sharp & Small!)",
-    character: "Wei Ming",
+    character: "John",
     landmark: "Geometry Sandbox"
   },
   {
     title: "Broadway Crossroads — New York, USA 🗽",
-    text: "<strong>Wei Ming</strong> visits a crossroads in New York. The streets meet in a perfect square corner — a <strong>right angle</strong>, measuring <strong>exactly 90°</strong>!",
+    text: "<strong>Sarah</strong> visits a crossroads in New York. The streets meet in a perfect square corner — a <strong>right angle</strong>, measuring <strong>exactly 90°</strong>!",
     highlight: "<strong>Right Angle</strong>: Exactly <strong>90°</strong>!",
-    character: "Wei Ming",
+    character: "Sarah",
     landmark: "Broadway Crossroads"
   },
   {
     title: "Opera House Sails — Sydney, Australia ⛵",
-    text: "<strong>Wei Ming</strong> opens the door of the Sydney Opera House all the way. It opens past a right angle, but not flat. That's an <strong>obtuse angle</strong>!",
+    text: "<strong>Mike</strong> opens the door of the Sydney Opera House all the way. It opens past a right angle, but not flat. That's an <strong>obtuse angle</strong>!",
     highlight: "<strong>Obtuse Angle</strong>: Between <strong>90° and 180°</strong>!",
-    character: "Wei Ming",
+    character: "Mike",
     landmark: "Sydney Opera House"
   },
   {
     title: "Giza Horizon — Cairo, Egypt 🔺",
-    text: "<strong>Wei Ming</strong> looks at the flat desert horizon near the Pyramids. A perfectly flat line makes a <strong>straight angle</strong>, measuring <strong>exactly 180°</strong>.",
+    text: "<strong>Priya</strong> looks at the flat desert horizon near the Pyramids. A perfectly flat line makes a <strong>straight angle</strong>, measuring <strong>exactly 180°</strong>.",
     highlight: "<strong>Straight Angle</strong>: Exactly <strong>180°</strong>!",
-    character: "Wei Ming",
+    character: "Priya",
     landmark: "Giza Pyramids"
   },
   {
     title: "Shibuya Crossing Spin — Tokyo, Japan 🏙️",
-    text: "<strong>Wei Ming</strong> spins all the way around in Shibuya Crossing. A full turn from start to finish is <strong>exactly 360°</strong>!",
+    text: "<strong>Yuki</strong> spins all the way around in Shibuya Crossing. A full turn from start to finish is <strong>exactly 360°</strong>!",
     highlight: "<strong>Full Spin</strong>: Exactly <strong>360°</strong>!",
-    character: "Wei Ming",
+    character: "Yuki",
     landmark: "Shibuya Crossing"
   }
 ];

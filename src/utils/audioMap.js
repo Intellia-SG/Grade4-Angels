@@ -46,5 +46,15 @@ export const audioMap = {
   "Welcome to Big Ben, London!": "/assets/audio/audio_welcome_to_big_ben__london__44.mp3",
   "Welcome to Machu Picchu, Cusco!": "/assets/audio/audio_welcome_to_machu_picchu__cusco__45.mp3",
   "Welcome to Colosseum, Rome!": "/assets/audio/audio_welcome_to_colosseum__rome__46.mp3",
-  "Welcome to Burj Khalifa, Dubai!": "/assets/audio/audio_welcome_to_burj_khalifa__dubai__47.mp3"
+  "Welcome to Burj Khalifa, Dubai!": "/assets/audio/audio_welcome_to_burj_khalifa__dubai__47.mp3",
+
+  // Aliases for character names & slight wording variations to guarantee instant playback
+  "Wei Ming opens a book just a little bit, and then opens it all the way flat.": "/assets/audio/audio_sarah_opens_her_book_just_a_little_bit__then_mike__3.mp3",
+  "Whose book open turn makes a bigger angle? Think about it!": "/assets/audio/audio_whose_book_makes_a_bigger_angle__think_about_it__4.mp3",
+  "Wei Ming lands in Paris, France.": "/assets/audio/audio_john_lands_in_paris__france__7.mp3",
+  "Wei Ming visits a crossroads in New York City.": "/assets/audio/audio_sarah_visits_a_crossroads_in_new_york_city__11.mp3",
+  "Wei Ming visits a busy crossroads in New York City.": "/assets/audio/audio_sarah_visits_a_crossroads_in_new_york_city__11.mp3",
+  "Wei Ming opens the door of the Sydney Opera House all the way.": "/assets/audio/audio_mike_opens_the_door_of_the_sydney_opera_house_all__13.mp3",
+  "Wei Ming looks at the flat desert horizon near the Pyramids of Giza.": "/assets/audio/audio_priya_looks_at_the_flat_desert_horizon_near_the_py_15.mp3",
+  "Wei Ming spins all the way around in a circle under the Tokyo lights.": "/assets/audio/audio_yuki_spins_all_the_way_around_in_a_circle_under_th_17.mp3"
 };
